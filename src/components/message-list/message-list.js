@@ -41,7 +41,7 @@ export const MessageList = () => {
 
   return (
     <>
-      <div ref={ref}>
+      <div ref={ref} className={styles.messages}>
         {messageList.map((message, index) => (
           <p key={index} className={styles.message}>
             <b>{message.author}</b>: {message.text}
