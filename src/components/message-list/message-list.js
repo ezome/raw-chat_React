@@ -7,7 +7,7 @@ import styles from "./message-list.module.css";
 export const MessageList = () => {
   const [messageList, setMessageList] = useState({});
   const [value, setValue] = useState("");
-  const [draft, setDraft] = useState({});
+  // const [draft, setDraft] = useState({});
   const ref = useRef(null);
   const handleChange = (e) => setValue(e.target.value);
 
@@ -26,12 +26,12 @@ export const MessageList = () => {
     [roomId]
   );
 
-  useEffect(() => {
-    setDraft({
-      ...draft,
-      [roomId]: value,
-    });
-  }, [draft, roomId, value]);
+  // useEffect(() => {
+  //   setDraft({
+  //     ...draft,
+  //     [roomId]: value,
+  //   });
+  // }, [draft, roomId, value]);
 
   useEffect(() => {
     const messages = messageList[roomId] ?? [];
