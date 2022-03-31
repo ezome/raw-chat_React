@@ -1,24 +1,22 @@
 import { useSelector, useDispatch } from "react-redux";
 import { ProfileForm } from "../components/profile-form";
-import { toggleVisibleProfile } from "../store/profile";
+import { toggleVisibleProfile, fullProfileSelector } from "../store/profile";
 
 export const ProfilePage = () => {
-  const state = useSelector((state) => state);
+  const profile = useSelector(fullProfileSelector);
 
   const dispatch = useDispatch();
-
-  console.log(state);
 
   return (
     <div>
       <h1>Profile Page</h1>
       <hr />
 
-      {state.isVisibleProfile && (
+      {profile.isVisibleProfile && (
         <>
-          <h2>firstName: {state.firstName}</h2>
-          <h2>lastName: {state.lastName}</h2>
-          <h2>phone: {state.phone}</h2>
+          <h2>firstName: {profile.firstName}</h2>
+          <h2>lastName: {profile.lastName}</h2>
+          <h2>phone: {profile.phone}</h2>
         </>
       )}
 
@@ -26,7 +24,7 @@ export const ProfilePage = () => {
         toggleVisibleProfile
       </button>
 
-      <ProfileForm {...state} />
+      <ProfileForm {...profile} />
     </div>
   );
 };

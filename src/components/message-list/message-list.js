@@ -1,52 +1,46 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { Input, InputAdornment } from "@mui/material";
 import { Send } from "@mui/icons-material";
 import { useParams } from "react-router-dom";
+import {
+  messagesSelectorByRoomId,
+  sendMessage,
+  messagesValueByRoomId,
+  valueMessage,
+} from "../../store/messages";
+import { Message } from "./message";
 import styles from "./message-list.module.css";
 
 export const MessageList = () => {
-  const [messageList, setMessageList] = useState({});
-  const [value, setValue] = useState("");
-  // const [draft, setDraft] = useState({});
   const ref = useRef(null);
-  const handleChange = (e) => setValue(e.target.value);
-
   const { roomId } = useParams();
+  const messages = useSelector(messagesSelectorByRoomId(roomId));
+  const value = useSelector(messagesValueByRoomId(roomId));
+  const dispatch = useDispatch();
 
-  const addMessageList = useCallback(
+  const send = useCallback(
     (message, author = "User") => {
       if (message) {
-        setMessageList((state) => ({
-          ...state,
-          [roomId]: [...(state[roomId] ?? []), { author, message }],
-        }));
-        setValue("");
+        dispatch(sendMessage(roomId, { author, message }));
       }
     },
-    [roomId]
+    [dispatch, roomId]
   );
 
   // useEffect(() => {
-  //   setDraft({
-  //     ...draft,
-  //     [roomId]: value,
-  //   });
-  // }, [draft, roomId, value]);
+  //   const lastMessage = messages[messages.length - 1];
 
-  useEffect(() => {
-    const messages = messageList[roomId] ?? [];
-    const lastMessage = messages[messages.length - 1];
-
-    if (messages.length && lastMessage.author !== "Bot") {
-      setTimeout(() => {
-        addMessageList("test", "Bot");
-      }, 500);
-    }
-  }, [messageList, roomId, addMessageList]);
+  //   if (messages.length && lastMessage.author !== "Bot") {
+  //     setTimeout(() => {
+  //       send("test", "Bot");
+  //     }, 500);
+  //   }
+  // }, [messages, roomId, send]);
 
   const handlePressInput = ({ code }) => {
     if (code === "Enter") {
-      addMessageList(value);
+      send(value);
     }
   };
 
@@ -58,28 +52,24 @@ export const MessageList = () => {
 
   useEffect(() => {
     handleScrollBottom();
-  }, [messageList, handleScrollBottom]);
-
-  const messages = messageList[roomId] ?? [];
+  }, [messages, handleScrollBottom]);
 
   return (
     <>
       <div ref={ref} className={styles.messages}>
         {messages.map((message, index) => (
-          <p key={index} className={styles.message}>
-            <b>{message.author}</b>: {message.message}
-          </p>
+          <Message key={index} message={message} roomId={roomId} />
         ))}
       </div>
       <Input
         fullWidth
         placeholder="Введите сообщение..."
         value={value}
-        onChange={handleChange}
+        onChange={(e) => dispatch(valueMessage(roomId, e.target.value))}
         onKeyPress={handlePressInput}
         endAdornment={
           <InputAdornment position="end">
-            {value && <Send onClick={() => addMessageList(value)} />}
+            {value && <Send onClick={() => send(value)} />}
           </InputAdornment>
         }
       />

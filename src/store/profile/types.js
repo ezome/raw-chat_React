@@ -1,2 +1,2 @@
-export const TOGGLE_VISBLE_PROFILE = "toggle visible profile";
-export const UPDATE_PROFILE = "update profile";
+export const TOGGLE_VISBLE_PROFILE = "@profile/toggle visible profile";
+export const UPDATE_PROFILE = "@profile/update profile";
