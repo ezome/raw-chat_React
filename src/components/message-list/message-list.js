@@ -5,7 +5,7 @@ import { Send } from "@mui/icons-material";
 import { useParams } from "react-router-dom";
 import {
   messagesSelectorByRoomId,
-  sendMessage,
+  sendMessageWithBot,
   messagesValueByRoomId,
   valueMessage,
 } from "../../store/messages";
@@ -15,6 +15,7 @@ import styles from "./message-list.module.css";
 export const MessageList = () => {
   const ref = useRef(null);
   const { roomId } = useParams();
+
   const messages = useSelector(messagesSelectorByRoomId(roomId));
   const value = useSelector(messagesValueByRoomId(roomId));
   const dispatch = useDispatch();
@@ -22,21 +23,11 @@ export const MessageList = () => {
   const send = useCallback(
     (message, author = "User") => {
       if (message) {
-        dispatch(sendMessage(roomId, { author, message }));
+        dispatch(sendMessageWithBot(roomId, { author, message }));
       }
     },
     [dispatch, roomId]
   );
-
-  // useEffect(() => {
-  //   const lastMessage = messages[messages.length - 1];
-
-  //   if (messages.length && lastMessage.author !== "Bot") {
-  //     setTimeout(() => {
-  //       send("test", "Bot");
-  //     }, 500);
-  //   }
-  // }, [messages, roomId, send]);
 
   const handlePressInput = ({ code }) => {
     if (code === "Enter") {
