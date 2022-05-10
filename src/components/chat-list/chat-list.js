@@ -4,9 +4,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { Chat } from "./chat";
 import {
-  createConversation,
   deleteConversation,
   conversationsSelector,
+  createConversationFb,
 } from "../../store/conversations";
 import AddIcon from "@mui/icons-material/Add";
 
@@ -21,9 +21,11 @@ export const ChatList = () => {
 
   const createConversationByName = () => {
     let name = prompt("Введите название комнаты");
-    let isValidName = !conversations.includes(name);
+    let isValidName = !conversations.find(
+      (conversation) => conversation.title === name
+    );
     if (name && isValidName) {
-      dispatch(createConversation(name));
+      dispatch(createConversationFb(name));
       setTimeout(() => navigate(`/chat/${name}`));
     } else {
       alert("Не валидная комната");
@@ -40,11 +42,11 @@ export const ChatList = () => {
 
   return (
     <List component="nav">
-      {conversations.map((chat, index) => (
-        <Link key={index} to={`/chat/${chat}`}>
+      {conversations.map(({ title, value }, index) => (
+        <Link key={index} to={`/chat/${title}`}>
           <Chat
-            title={chat}
-            selected={roomId === chat}
+            title={title}
+            selected={roomId === title}
             deleteConversationByName={deleteConversationByName}
           />
         </Link>

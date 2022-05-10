@@ -1,9 +1,21 @@
 import { nanoid } from "nanoid";
-import { SEND_MESSAGE, DELETE_MESSAGE_BY_ID, VALUE_MESSAGE } from "./types";
+import {
+  SEND_MESSAGE,
+  DELETE_MESSAGE_BY_ID,
+  GET_MESSAGES_START,
+  GET_MESSAGES_SUCCESS,
+  GET_MESSAGES_ERROR,
+  SEND_MESSAGE_START,
+  SEND_MESSAGE_SUCCESS,
+  SEND_MESSAGE_ERROR,
+} from "./types";
 
 const initialState = {
-  messages: {},
-  value: {},
+  messages: [],
+  pending: false,
+  error: null,
+  pendingSend: false,
+  errorSend: null,
 };
 
 export const messagesReducer = (state = initialState, action) => {
@@ -18,11 +30,23 @@ export const messagesReducer = (state = initialState, action) => {
             { ...action.payload.message, id: nanoid() },
           ],
         },
-        value: {
-          ...state.value,
-          [action.payload.roomId]: "",
+      };
+    case SEND_MESSAGE_START:
+      return { ...state, pendingSend: true, errorSend: null };
+    case SEND_MESSAGE_SUCCESS:
+      return {
+        ...state,
+        pendingSend: false,
+        messages: {
+          ...state.messages,
+          [action.payload.roomId]: [
+            ...(state.messages[action.payload.roomId] ?? []),
+            { ...action.payload.message, id: nanoid() },
+          ],
         },
       };
+    case SEND_MESSAGE_ERROR:
+      return { ...state, pendingSend: false, errorSend: action.payload };
     case DELETE_MESSAGE_BY_ID:
       return {
         ...state,
@@ -33,14 +57,12 @@ export const messagesReducer = (state = initialState, action) => {
           ),
         },
       };
-    case VALUE_MESSAGE:
-      return {
-        ...state,
-        value: {
-          ...state.value,
-          [action.payload.roomId]: action.payload.messageValue,
-        },
-      };
+    case GET_MESSAGES_START:
+      return { ...state, pending: true, error: null };
+    case GET_MESSAGES_SUCCESS:
+      return { ...state, pending: false, messages: action.payload };
+    case GET_MESSAGES_ERROR:
+      return { ...state, pending: false, error: action.payload };
     default:
       return state;
   }

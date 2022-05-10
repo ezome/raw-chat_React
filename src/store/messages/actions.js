@@ -1,4 +1,13 @@
-import { SEND_MESSAGE, DELETE_MESSAGE_BY_ID, VALUE_MESSAGE } from "./types";
+import {
+  SEND_MESSAGE,
+  DELETE_MESSAGE_BY_ID,
+  GET_MESSAGES_START,
+  GET_MESSAGES_SUCCESS,
+  GET_MESSAGES_ERROR,
+  SEND_MESSAGE_START,
+  SEND_MESSAGE_SUCCESS,
+  SEND_MESSAGE_ERROR,
+} from "./types";
 
 export const sendMessage = (roomId, message) => {
   return {
@@ -14,9 +23,30 @@ export const deleteMessage = (roomId, messageId) => {
   };
 };
 
-export const valueMessage = (roomId, messageValue) => {
-  return {
-    type: VALUE_MESSAGE,
-    payload: { roomId, messageValue },
-  };
-};
+export const getMessagesStart = () => ({
+  type: GET_MESSAGES_START,
+});
+
+export const getMessagesSuccess = (messages) => ({
+  type: GET_MESSAGES_SUCCESS,
+  payload: messages,
+});
+
+export const getMessagesError = (error) => ({
+  type: GET_MESSAGES_ERROR,
+  payload: error,
+});
+
+export const sendMessageStart = () => ({
+  type: SEND_MESSAGE_START,
+});
+
+export const sendMessageSuccess = (roomId, message) => ({
+  type: SEND_MESSAGE_SUCCESS,
+  payload: { roomId, message },
+});
+
+export const sendMessageError = (error) => ({
+  type: SEND_MESSAGE_ERROR,
+  payload: error,
+});

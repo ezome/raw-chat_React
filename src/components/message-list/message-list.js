@@ -1,13 +1,12 @@
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Input, InputAdornment } from "@mui/material";
 import { Send } from "@mui/icons-material";
 import { useParams } from "react-router-dom";
 import {
   messagesSelectorByRoomId,
-  sendMessageWithBot,
-  messagesValueByRoomId,
-  valueMessage,
+  sendMessageFb,
+  getMessagesFb,
 } from "../../store/messages";
 import { Message } from "./message";
 import styles from "./message-list.module.css";
@@ -17,13 +16,14 @@ export const MessageList = () => {
   const { roomId } = useParams();
 
   const messages = useSelector(messagesSelectorByRoomId(roomId));
-  const value = useSelector(messagesValueByRoomId(roomId));
+  const [value, setValue] = useState("");
   const dispatch = useDispatch();
 
   const send = useCallback(
     (message, author = "User") => {
       if (message) {
-        dispatch(sendMessageWithBot(roomId, { author, message }));
+        dispatch(sendMessageFb(roomId, { author, message }));
+        setValue("");
       }
     },
     [dispatch, roomId]
@@ -45,6 +45,10 @@ export const MessageList = () => {
     handleScrollBottom();
   }, [messages, handleScrollBottom]);
 
+  useEffect(() => {
+    dispatch(getMessagesFb());
+  }, [dispatch]);
+
   return (
     <>
       <div ref={ref} className={styles.messages}>
@@ -56,7 +60,7 @@ export const MessageList = () => {
         fullWidth
         placeholder="Введите сообщение..."
         value={value}
-        onChange={(e) => dispatch(valueMessage(roomId, e.target.value))}
+        onChange={(e) => setValue(e.target.value)}
         onKeyPress={handlePressInput}
         endAdornment={
           <InputAdornment position="end">
