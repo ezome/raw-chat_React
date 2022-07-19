@@ -1,1 +1,3 @@
-#CHAT1
+#CHAT
+
+React + Redux + Firebase
