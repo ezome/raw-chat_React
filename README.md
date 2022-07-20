@@ -1,3 +1,3 @@
 #CHAT
 
-React + Redux + Firebase
+React/Redux/Firebase/Material UI
